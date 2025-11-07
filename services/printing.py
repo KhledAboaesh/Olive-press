@@ -1,11 +1,90 @@
-def render_invoice_template(invoice_data, customer_data):
-    # دالة وهمية: ترجع نص HTML بسيط للفاتورة مع اسم العميل
-    return f"<html><body><h1>فاتورة رقم {invoice_data.get('id', '')}</h1><p>العميل: {customer_data.get('name', '')}</p></body></html>"
+import os
+from datetime import datetime
+from PySide6.QtPrintSupport import QPrinter, QPrintDialog
+from PySide6.QtGui import QTextDocument
 
+def render_invoice_template(invoice, customer):
+    """إنشاء HTML للفواتير مع هوية المعصرة"""
+    brand_name = "معصرة الزيتون"
+    logo_path = os.path.join("assets", "logo.png")
 
-def save_invoice_pdf(invoice_data, file_path):
-    # دالة وهمية: تحفظ نص الفاتورة في ملف PDF (هنا تحفظ كـ HTML فقط)
-    html = render_invoice_template(invoice_data, {"name": "غير معروف"})
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(html)
-    return file_path
+    html = f"""
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{ font-family: Tahoma; }}
+            h1 {{ color: #006400; }}
+            table {{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 20px;
+            }}
+            th, td {{
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: center;
+            }}
+            th {{
+                background-color: #006400;
+                color: white;
+            }}
+            .footer {{
+                margin-top: 30px;
+                font-size: 12pt;
+                text-align: right;
+                color: #555;
+            }}
+        </style>
+    </head>
+    <body>
+        <h1>{brand_name}</h1>
+        <p><b>الزبون:</b> {customer.get("name","غير معروف")}</p>
+        <p><b>التاريخ:</b> {invoice.get("date","")}</p>
+
+        <table>
+            <tr>
+                <th>نوع العملية</th>
+                <th>كمية الزيت (لتر)</th>
+                <th>سعر/لتر</th>
+                <th>عبوات الزبون</th>
+                <th>عبوات المعصرة</th>
+                <th>طريقة الدفع</th>
+                <th>الإجمالي</th>
+            </tr>
+            <tr>
+                <td>{invoice.get("operation_type","")}</td>
+                <td>{invoice.get("oil_quantity",0)}</td>
+                <td>{invoice.get("price_per_liter",0)}</td>
+                <td>{invoice.get("bottle_count_customer",0)}</td>
+                <td>{invoice.get("bottle_count_shop",0)}</td>
+                <td>{invoice.get("payment_type","")}</td>
+                <td>{invoice.get("total",0)}</td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            تم الطباعة بتاريخ: {datetime.now().strftime("%Y-%m-%d %H:%M")}
+        </div>
+    </body>
+    </html>
+    """
+    return html
+
+def print_invoice(html, parent=None):
+    """طباعة الفاتورة مباشرة"""
+    doc = QTextDocument()
+    doc.setHtml(html)
+    printer = QPrinter(QPrinter.HighResolution)
+    dialog = QPrintDialog(printer, parent)
+    if dialog.exec() == QPrintDialog.Accepted:
+        doc.print_(printer)
+
+def save_invoice_pdf(html, path):
+    """حفظ الفاتورة كملف PDF"""
+    doc = QTextDocument()
+    doc.setHtml(html)
+    printer = QPrinter(QPrinter.HighResolution)
+    printer.setOutputFormat(QPrinter.PdfFormat)
+    printer.setOutputFileName(path)
+    doc.print_(printer)

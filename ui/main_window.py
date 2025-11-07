@@ -12,27 +12,31 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.store = store
         self.setWindowTitle("إدارة معصرة الزيتون")
-        self.resize(1150, 760)
+        self.resize(1200, 800)
+
         # إضافة أيقونة للنافذة إذا وجدت
         icon_path = os.path.join(os.path.dirname(__file__), "..", "assets", "logo.png")
         if os.path.exists(icon_path):
             self.setWindowIcon(QIcon(icon_path))
 
+        # التبويبات
         self.tabs = QTabWidget()
         self.tabs.setTabPosition(QTabWidget.North)
         self.tabs.setDocumentMode(True)  # مظهر حديث للتبويبات
         self.setCentralWidget(self.tabs)
 
+        # إضافة الواجهات
         self.customers_view = CustomersView(store)
         self.deliveries_view = DeliveriesView(store)
         self.invoices_view = InvoicesView(store)
         self.reports_view = ReportsView(store)
 
-        self.tabs.addTab(self.customers_view, "الزبائن")
-        self.tabs.addTab(self.deliveries_view, "الاستلام")
-        self.tabs.addTab(self.invoices_view, "الفواتير")
-        self.tabs.addTab(self.reports_view, "التقارير والديون")
+        self.tabs.addTab(self.customers_view, "👥 الزبائن")
+        self.tabs.addTab(self.deliveries_view, "📦 الاستلام")
+        self.tabs.addTab(self.invoices_view, "🧾 الفواتير")
+        self.tabs.addTab(self.reports_view, "📊 التقارير والديون")
 
+        # إنشاء القوائم والشريط
         self._make_menu()
         self._make_toolbar()
         self._apply_styles()
@@ -47,14 +51,16 @@ class MainWindow(QMainWindow):
 
     def _make_toolbar(self):
         toolbar = QToolBar("شريط الأدوات")
-        toolbar.setIconSize(QSize(24, 24))
+        toolbar.setIconSize(QSize(28, 28))
         self.addToolBar(Qt.TopToolBarArea, toolbar)
+
         # زر تحديث
-        refresh_action = QAction(QIcon(), "تحديث", self)
+        refresh_action = QAction(QIcon(), "🔄 تحديث", self)
         refresh_action.triggered.connect(self.refresh_all)
         toolbar.addAction(refresh_action)
+
         # زر إعادة ضبط
-        reset_action = QAction(QIcon(), "إعادة ضبط", self)
+        reset_action = QAction(QIcon(), "🗑️ إعادة ضبط", self)
         reset_action.triggered.connect(self.reset_data)
         toolbar.addAction(reset_action)
 
@@ -78,8 +84,9 @@ class MainWindow(QMainWindow):
                 margin: 2px;
             }
             QTabBar::tab:selected {
-                background: #4f8cff;
+                background: #006400;
                 color: white;
+                font-weight: bold;
             }
             QMenuBar {
                 background: #f0f0f0;
