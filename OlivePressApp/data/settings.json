@@ -1,0 +1,32 @@
+{
+  "prices": {
+    "oil_per_liter": 15.0,
+    "bottle": 5.0
+  },
+  "unit_weights": {
+    "دلو": 14.0,
+    "صندوق": 14.5,
+    "كيس": null,
+    "كيلو": 1.0
+  },
+  "options": {
+    "payment_types": [
+      "نقدي",
+      "دين",
+      "إلكتروني"
+    ]
+  },
+  "items": [
+    {
+      "brand_name": "معصرة الزيتون",
+      "price_per_liter_default": 15.0,
+      "bottle_price_default": 5.0,
+      "unit_weights": {
+        "دلو": 14.0,
+        "صندوق": 14.5,
+        "كيس": null,
+        "كيلو": 1.0
+      }
+    }
+  ]
+}
