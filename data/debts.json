@@ -1,0 +1,12 @@
+{
+  "seq": 1,
+  "items": [
+    {
+      "id": 1,
+      "customer_id": 2,
+      "invoice_id": 2,
+      "remaining_amount": 255.0,
+      "status": "غير مدفوع"
+    }
+  ]
+}

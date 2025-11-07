@@ -1,0 +1,40 @@
+{
+  "seq": 2,
+  "items": [
+    {
+      "id": 1,
+      "customer_id": 1,
+      "delivery_id": 1,
+      "operation_type": "عصر",
+      "oil_quantity": 20.0,
+      "price_per_liter": 15.0,
+      "bottle_count_customer": 2,
+      "bottle_count_shop": 1,
+      "bottle_price": 5.0,
+      "payment_type": "نقدي",
+      "total": 310.0,
+      "date": "2025-11-07",
+      "swap": null
+    },
+    {
+      "id": 2,
+      "customer_id": 2,
+      "delivery_id": 2,
+      "operation_type": "بديل",
+      "oil_quantity": 16.0,
+      "price_per_liter": 15.0,
+      "bottle_count_customer": 1,
+      "bottle_count_shop": 2,
+      "bottle_price": 5.0,
+      "payment_type": "دين",
+      "total": 255.0,
+      "date": "2025-11-07",
+      "swap": {
+        "olive_weight": 30.0,
+        "oil_received": 16.0,
+        "difference_liters": 2.0,
+        "difference_price": 30.0
+      }
+    }
+  ]
+}
