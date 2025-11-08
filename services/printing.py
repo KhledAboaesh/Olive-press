@@ -40,7 +40,7 @@ def render_invoice_template(invoice, customer):
     </head>
     <body>
         <div style="text-align:center;">
-            <img src="{logo_path}" alt="Logo" style="height:80px;"><br>
+            <img src="{logo_path}" alt="Logo" style="width:60px;"><br>
             <h1>{brand_name}</h1>
         </div>
         <p><b>رقم الفاتورة:</b> {invoice.get("id","---")}</p>
@@ -71,7 +71,33 @@ def render_invoice_template(invoice, customer):
                 <td>{invoice.get("remaining_amount",0)}</td>
             </tr>
         </table>
-
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
         <div class="footer">
             تم الطباعة بتاريخ: {datetime.now().strftime("%Y-%m-%d %H:%M")}
         </div>

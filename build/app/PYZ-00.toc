@@ -352,6 +352,7 @@
   ('ui.invoices_view', 'C:\\pc\\test1\\ui\\invoices_view.py', 'PYMODULE'),
   ('ui.main_window', 'C:\\pc\\test1\\ui\\main_window.py', 'PYMODULE'),
   ('ui.reports_view', 'C:\\pc\\test1\\ui\\reports_view.py', 'PYMODULE'),
+  ('ui.settings_view', 'C:\\pc\\test1\\ui\\settings_view.py', 'PYMODULE'),
   ('ui.widgets', '-', 'PYMODULE'),
   ('ui.widgets.forms', 'C:\\pc\\test1\\ui\\widgets\\forms.py', 'PYMODULE'),
   ('urllib',

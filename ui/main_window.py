@@ -1,12 +1,12 @@
-from PySide6.QtWidgets import QMainWindow, QTabWidget, QMessageBox, QToolBar, QStatusBar
-from PySide6.QtGui import QAction, QIcon
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QMainWindow, QTabWidget, QMessageBox, QStatusBar, QPushButton
+from PySide6.QtGui import QIcon
+import os, shutil
+from datetime import datetime
 from ui.customers_view import CustomersView
 from ui.deliveries_view import DeliveriesView
 from ui.invoices_view import InvoicesView
 from ui.reports_view import ReportsView
 from ui.settings_view import SettingsView
-import os
 
 class MainWindow(QMainWindow):
     def __init__(self, store):
@@ -22,8 +22,6 @@ class MainWindow(QMainWindow):
 
         # التبويبات
         self.tabs = QTabWidget()
-        self.tabs.setTabPosition(QTabWidget.North)
-        self.tabs.setDocumentMode(True)
         self.setCentralWidget(self.tabs)
 
         # إضافة الواجهات
@@ -39,90 +37,57 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(self.reports_view, "📊 التقارير والديون")
         self.tabs.addTab(self.settings_view, "⚙️ الإعدادات")
 
-        # القوائم والشريط
-        self._make_menu()
-        self._make_toolbar()
-        self._apply_styles()
-
         # شريط المهام
         self.status = QStatusBar()
         self.setStatusBar(self.status)
+
+        # أزرار في شريط المهام
+        self._add_status_buttons()
         self.update_status()
 
-    def _make_menu(self):
-        menubar = self.menuBar()
-        file_menu = menubar.addMenu("ملف")
+    def _add_status_buttons(self):
+        # زر تحديث
+        btn_refresh = QPushButton("🔄 تحديث")
+        btn_refresh.clicked.connect(self.refresh_all)
+        self.status.addPermanentWidget(btn_refresh)
 
-        reset_action = QAction("🗑️ إعادة ضبط البيانات", self)
-        reset_action.triggered.connect(self.reset_data)
-        file_menu.addAction(reset_action)
+        # زر إعادة ضبط
+        btn_reset = QPushButton("🗑️ إعادة الضبط")
+        btn_reset.clicked.connect(self.reset_data)
+        btn_reset.setStyleSheet("background-color:#ff0000;")  # لون مميز للتحذير
+        self.status.addPermanentWidget(btn_reset)
 
-        backup_action = QAction("💾 نسخ احتياطي", self)
-        backup_action.triggered.connect(self.backup_data)
-        file_menu.addAction(backup_action)
+        # زر نسخ احتياطي
+        btn_backup = QPushButton("💾 نسخ احتياطي")
+        btn_backup.clicked.connect(self.backup_data)
+        self.status.addPermanentWidget(btn_backup)
 
-        exit_action = QAction("🚪 خروج", self)
-        exit_action.triggered.connect(self.close)
-        file_menu.addAction(exit_action)
+        # زر خروج
+        btn_exit = QPushButton("🚪 خروج")
+        btn_exit.clicked.connect(self.close)
+        btn_exit.setStyleSheet("background-color:#ff0000;")  # لون مميز للخروج
+        self.status.addPermanentWidget(btn_exit)
 
-    def _make_toolbar(self):
-        toolbar = QToolBar("شريط الأدوات")
-        toolbar.setIconSize(QSize(28, 28))
-        self.addToolBar(Qt.TopToolBarArea, toolbar)
+        # أزرار التنقل
+        btn_customer = QPushButton("👤 زبون جديد")
+        btn_customer.clicked.connect(lambda: self.tabs.setCurrentWidget(self.customers_view))
+        self.status.addPermanentWidget(btn_customer)
 
-        refresh_action = QAction("🔄 تحديث", self)
-        refresh_action.triggered.connect(self.refresh_all)
-        toolbar.addAction(refresh_action)
+        btn_delivery = QPushButton("📦 استلام جديد")
+        btn_delivery.clicked.connect(lambda: self.tabs.setCurrentWidget(self.deliveries_view))
+        self.status.addPermanentWidget(btn_delivery)
 
-        reset_action = QAction("🗑️ إعادة ضبط", self)
-        reset_action.triggered.connect(self.reset_data)
-        toolbar.addAction(reset_action)
+        btn_invoice = QPushButton("🧾 فاتورة")
+        btn_invoice.clicked.connect(lambda: self.tabs.setCurrentWidget(self.invoices_view))
+        self.status.addPermanentWidget(btn_invoice)
 
-        add_customer = QAction("👤 زبون جديد", self)
-        add_customer.triggered.connect(lambda: self.tabs.setCurrentWidget(self.customers_view))
-        toolbar.addAction(add_customer)
+        btn_reports = QPushButton("📊 تقارير")
+        btn_reports.clicked.connect(lambda: self.tabs.setCurrentWidget(self.reports_view))
+        self.status.addPermanentWidget(btn_reports)
 
-        add_delivery = QAction("📦 استلام جديد", self)
-        add_delivery.triggered.connect(lambda: self.tabs.setCurrentWidget(self.deliveries_view))
-        toolbar.addAction(add_delivery)
-
-        add_invoice = QAction("🧾 فاتورة جديدة", self)
-        add_invoice.triggered.connect(lambda: self.tabs.setCurrentWidget(self.invoices_view))
-        toolbar.addAction(add_invoice)
-
-        reports = QAction("📊 تقارير", self)
-        reports.triggered.connect(lambda: self.tabs.setCurrentWidget(self.reports_view))
-        toolbar.addAction(reports)
-
-        settings = QAction("⚙️ إعدادات", self)
-        settings.triggered.connect(lambda: self.tabs.setCurrentWidget(self.settings_view))
-        toolbar.addAction(settings)
-
-    def _apply_styles(self):
-        self.setStyleSheet("""
-            QMainWindow { background: #f7f7fa; }
-            QTabWidget::pane {
-                border: 1px solid #d0d0d0;
-                border-radius: 8px;
-                margin: 8px;
-            }
-            QTabBar::tab {
-                background: #e0e0e0;
-                border-radius: 8px;
-                padding: 10px 24px;
-                font-size: 17px;
-                color: #333;
-                margin: 2px;
-            }
-            QTabBar::tab:selected {
-                background: #006400;
-                color: white;
-                font-weight: bold;
-            }
-            QMenuBar { background: #f0f0f0; font-size: 16px; }
-            QToolBar { background: #f0f4ff; border-bottom: 1px solid #d0d0d0; }
-            QToolButton { font-size: 15px; padding: 6px 16px; }
-        """)
+        btn_settings = QPushButton("⚙️ إعدادات")
+        btn_settings.clicked.connect(lambda: self.tabs.setCurrentWidget(self.settings_view))
+        self.status.addPermanentWidget(btn_settings)
 
     def reset_data(self):
         reply = QMessageBox.question(
@@ -154,5 +119,11 @@ class MainWindow(QMainWindow):
         )
 
     def backup_data(self):
-        # هنا ممكن تضيف كود النسخ الاحتياطي (نسخ مجلد data إلى مجلد backups)
-        QMessageBox.information(self, "نسخ احتياطي", "تم إنشاء نسخة احتياطية للبيانات.")
+        """نسخ مجلد data إلى مجلد backups مع اسم حسب التاريخ"""
+        src = "data"
+        dst = "backups"
+        os.makedirs(dst, exist_ok=True)
+        backup_name = datetime.now().strftime("backup_%Y%m%d_%H%M%S")
+        dst_path = os.path.join(dst, backup_name)
+        shutil.copytree(src, dst_path)
+        QMessageBox.information(self, "نسخ احتياطي", f"✅ تم إنشاء نسخة احتياطية في {dst_path}")
