@@ -1,32 +1,11 @@
 {
-  "prices": {
-    "oil_per_liter": 15.0,
-    "bottle": 5.0
-  },
-  "unit_weights": {
-    "دلو": 14.0,
-    "صندوق": 14.5,
-    "كيس": null,
-    "كيلو": 1.0
-  },
-  "options": {
-    "payment_types": [
-      "نقدي",
-      "دين",
-      "إلكتروني"
-    ]
-  },
   "items": [
     {
-      "brand_name": "معصرة الزيتون",
-      "price_per_liter_default": 15.0,
-      "bottle_price_default": 5.0,
-      "unit_weights": {
-        "دلو": 14.0,
-        "صندوق": 14.5,
-        "كيس": null,
-        "كيلو": 1.0
-      }
+      "name": "الاخلاص",
+      "price": 0.0,
+      "package_price": 0.0,
+      "weight": 1
     }
-  ]
+  ],
+  "last_id": 1
 }

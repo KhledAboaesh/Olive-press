@@ -9,10 +9,24 @@ class JsonStore:
         return os.path.join(self.folder, f"{name}.json")
 
     def _init(self, name):
+        """إنشاء الملف إذا لم يكن موجود أو إصلاحه إذا ناقص"""
         path = self._path(name)
         if not os.path.exists(path):
             with open(path, "w", encoding="utf-8") as f:
                 json.dump({"items": [], "last_id": 0}, f, ensure_ascii=False, indent=2)
+        else:
+            # إصلاح الملفات الناقصة
+            with open(path, "r", encoding="utf-8") as f:
+                try:
+                    data = json.load(f)
+                except Exception:
+                    data = {}
+            if "items" not in data:
+                data["items"] = []
+            if "last_id" not in data:
+                data["last_id"] = 0
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
 
     def load(self, name):
         self._init(name)
@@ -28,6 +42,8 @@ class JsonStore:
 
     def insert(self, name, item):
         data = self.load(name)
+        if "last_id" not in data:
+            data["last_id"] = 0
         data["last_id"] += 1
         item["id"] = data["last_id"]
         data["items"].append(item)
@@ -48,15 +64,12 @@ class JsonStore:
         self.save(name, data)
 
     def reset_all(self, fill_demo=False):
-        # إعادة ضبط كل الملفات
         for fname in os.listdir(self.folder):
             if fname.endswith(".json"):
                 os.remove(os.path.join(self.folder, fname))
-        # إنشاء ملفات جديدة فارغة
         for name in ["customers", "deliveries", "invoices", "debts", "adjustments", "settings"]:
             self._init(name)
         if fill_demo:
-            # إضافة بيانات تجريبية
             cust = self.insert("customers", {"name": "زبون تجريبي"})
             inv = self.insert("invoices", {
                 "customer_id": cust["id"],
@@ -73,11 +86,8 @@ class JsonStore:
                 "date": "2025-11-07"
             })
 
-    # -------------------------------
     # دوال خاصة بالديون
-    # -------------------------------
     def settle_debt(self, debt_id):
-        """تسديد كامل الدين"""
         data = self.load("debts")
         for d in data["items"]:
             if d["id"] == debt_id:
@@ -87,7 +97,6 @@ class JsonStore:
         self.save("debts", data)
 
     def partial_settle_debt(self, debt_id, amount):
-        """تسديد جزئي للدين"""
         data = self.load("debts")
         for d in data["items"]:
             if d["id"] == debt_id and d["status"] != "مدفوع":

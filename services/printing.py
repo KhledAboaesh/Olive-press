@@ -5,7 +5,7 @@ from PySide6.QtGui import QTextDocument
 
 def render_invoice_template(invoice, customer):
     """إنشاء HTML للفواتير مع هوية المعصرة"""
-    brand_name = "معصرة الزيتون"
+    brand_name = invoice.get("brand_name", "معصرة الزيتون")
     logo_path = os.path.join("assets", "logo.png")
 
     html = f"""
@@ -13,8 +13,8 @@ def render_invoice_template(invoice, customer):
     <head>
         <meta charset="utf-8">
         <style>
-            body {{ font-family: Tahoma; }}
-            h1 {{ color: #006400; }}
+            body {{ font-family: Tahoma; margin: 40px; }}
+            h1 {{ color: #006400; text-align: center; }}
             table {{
                 border-collapse: collapse;
                 width: 100%;
@@ -29,6 +29,7 @@ def render_invoice_template(invoice, customer):
                 background-color: #006400;
                 color: white;
             }}
+            tr:nth-child(even) {{ background-color: #f2f2f2; }}
             .footer {{
                 margin-top: 30px;
                 font-size: 12pt;
@@ -38,7 +39,11 @@ def render_invoice_template(invoice, customer):
         </style>
     </head>
     <body>
-        <h1>{brand_name}</h1>
+        <div style="text-align:center;">
+            <img src="{logo_path}" alt="Logo" style="height:80px;"><br>
+            <h1>{brand_name}</h1>
+        </div>
+        <p><b>رقم الفاتورة:</b> {invoice.get("id","---")}</p>
         <p><b>الزبون:</b> {customer.get("name","غير معروف")}</p>
         <p><b>التاريخ:</b> {invoice.get("date","")}</p>
 
@@ -51,6 +56,8 @@ def render_invoice_template(invoice, customer):
                 <th>عبوات المعصرة</th>
                 <th>طريقة الدفع</th>
                 <th>الإجمالي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
             </tr>
             <tr>
                 <td>{invoice.get("operation_type","")}</td>
@@ -60,6 +67,8 @@ def render_invoice_template(invoice, customer):
                 <td>{invoice.get("bottle_count_shop",0)}</td>
                 <td>{invoice.get("payment_type","")}</td>
                 <td>{invoice.get("total",0)}</td>
+                <td>{invoice.get("paid_amount",0)}</td>
+                <td>{invoice.get("remaining_amount",0)}</td>
             </tr>
         </table>
 
